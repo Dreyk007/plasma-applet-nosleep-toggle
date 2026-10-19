@@ -1,0 +1,47 @@
+name: Build and Release Plasmoid
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Package and Publish .plasmoid
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate metadata.json
+        run: |
+          jq empty metadata.json
+          VERSION=$(jq -r '.KPlugin.Version' metadata.json)
+          echo "Detected version in metadata.json: ${VERSION}"
+          echo "PACKAGE_NAME=nosleep-toggle-v${VERSION}.plasmoid" >> "$GITHUB_ENV"
+
+      - name: Build .plasmoid package
+        run: |
+          zip -r "${PACKAGE_NAME}" metadata.json contents/ LICENSE README.md
+          sha256sum "${PACKAGE_NAME}" > "${PACKAGE_NAME}.sha256"
+
+      - name: Upload artifact to workflow run
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PACKAGE_NAME }}
+          path: |
+            ${{ env.PACKAGE_NAME }}
+            ${{ env.PACKAGE_NAME }}.sha256
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            ${{ env.PACKAGE_NAME }}
+            ${{ env.PACKAGE_NAME }}.sha256
