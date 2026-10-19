@@ -1,0 +1,22 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Dreyk"
+            }
+        ],
+        "Category": "System Information",
+        "Description": "Inhibits system sleep using kde-inhibit while keeping screen DPMS timeout active.",
+        "EnabledByDefault": true,
+        "Icon": "system-suspend-inhibited",
+        "Id": "org.kde.plasma.nosleeptoggle",
+        "License": "GPL-3.0-or-later",
+        "Name": "No-Sleep Toggle",
+        "Version": "1.0.0",
+        "Website": "https://github.com/Dreyk007/plasma-applet-nosleep-toggle"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-NotificationArea": "true",
+    "X-Plasma-NotificationAreaCategory": "SystemServices"
+}
